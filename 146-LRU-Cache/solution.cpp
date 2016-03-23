@@ -1,31 +1,36 @@
 class LRUCache{
-    const int cap;
-    unordered_map<int, list<pair<int, int> >::iterator> map;
-    list<pair<int, int>> lst;
- public:
-    LRUCache(int capacity):cap(capacity) {}
 
-    int get(int key) {
-        auto it = map.find(key);
-        if(it == map.end()) return -1;
+private:
+	list<pair<int, int> > queue_list;	//link queue of <key,val>
+	unordered_map<int, list<pair<int, int>>::iterator > hash_map;	//
+	const int capacity;
 
-        lst.push_front(*it->second);
-        lst.erase(it->second);
-        it->second = lst.begin();
-        return it->second->second;
-    }
+public:
+	LRUCache(int capacity) :capacity(capacity)	{}
 
-    void set(int key, int value) {
-        auto it = map.find(key);
-        if(it == map.end()){  // insert new
-            while (map.size() >= cap) {
-                map.erase(lst.crbegin()->first);
-                lst.pop_back();
-            }
-        }else  // reset existed
-            lst.erase(it->second);
+	int get(int key) {
+		auto it_map = hash_map.find(key);
+		if (it_map == hash_map.end())	return -1;//if key not found
+		queue_list.push_front(*it_map->second);	//copy the elem to the beginning of queue
+		queue_list.erase(it_map->second);			//remove old elem
+		it_map->second = queue_list.begin();
+		return it_map->second->second;
+	}
 
-        lst.push_front({key, value});
-        map[key] = lst.begin();
-    }
+	void set(int key, int value) {
+		auto it_map = hash_map.find(key);
+		if (it_map == hash_map.end())	//key not found
+		{
+			if (hash_map.size() == capacity)	//if already full
+			{
+				hash_map.erase(queue_list.crbegin()->first);
+				queue_list.pop_back(); //deque the last recent used key
+			}
+		}
+		else	//if key found
+			queue_list.erase(it_map->second);	//erase the old key
+
+		queue_list.push_front(make_pair(key, value)); 
+		hash_map[key] = queue_list.begin();	//enque new key
+	}
 };
