@@ -19,18 +19,17 @@ public:
 
 	void set(int key, int value) {
 		auto it_map = hash_map.find(key);
-		if (it_map != hash_map.end())	//if key found
-		{
-			queue_list.erase(it_map->second);	//erase the old key
-		}
-		else	//key not found,  
+		if (it_map == hash_map.end())	//key not found
 		{
 			if (queue_list.size() == capacity)	//if already full
 			{
-				hash_map.erase(queue_list.rbegin()->first);
+				hash_map.erase(queue_list.crbegin()->first);
 				queue_list.pop_back(); //deque the last recent used key
 			}
 		}
+		else	//if key found
+			queue_list.erase(it_map->second);	//erase the old key
+
 		queue_list.push_front(make_pair(key, value)); 
 		hash_map[key] = queue_list.begin();	//enque new key
 	}
