@@ -9,7 +9,6 @@ public:
 		for (int j = 0; j<s.size(); j++)
 		{
 			char current_char = s[j];
-			cout<<current_char<<endl;
 			int& last_appear = list[current_char-'\0'];
 			if (last_appear >= i)
 				i = last_appear + 1;
