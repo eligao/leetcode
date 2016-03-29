@@ -7,7 +7,7 @@ public:
 		int i = 0, max_len = 0;
 		for (int j = 0; j<s.size(); j++)
 		{
-			char current_char = s[j];
+			char& current_char = s[j];
 			int& last_appear = list[current_char];
 			if (last_appear >= i)
 				i = last_appear + 1;
